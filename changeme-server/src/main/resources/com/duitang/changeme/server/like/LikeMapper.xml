@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="like">
+
+    <resultMap id="RM-LIKE" type="LikeDO">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="objectId" column="object_id"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="category" column="category"/>
+    </resultMap>
+    <sql id="LikeDO-COLS">
+        id, user_id, object_id, created_date, category
+    </sql>
+
+    <select id="findById" resultMap="RM-LIKE">
+        SELECT
+        <include refid="LikeDO-COLS"/>
+        FROM mblog_like
+        WHERE id=#{id}
+    </select>
+
+    <select id="findByIds" resultMap="RM-LIKE">
+        SELECT
+        <include refid="LikeDO-COLS"/>
+        FROM mblog_like
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <update id="updateById">
+        UPDATE
+        mblog_like
+        SET
+        <![CDATA[
+            user_id = #{userId}
+        ]]>
+        WHERE
+        id = #{id}
+        LIMIT 1
+    </update>
+</mapper>
